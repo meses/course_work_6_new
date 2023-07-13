@@ -3,7 +3,8 @@ from django.urls import path
 from main.apps import MainConfig
 from main.views import index, CustomerListView, MessageListView, SendingSettingsListView, CustomerCreateView, \
     CustomerDetailView, CustomerUpdateView, CustomerDeleteView, SendingSettingsCreateView, SendingSettingsDetailView, \
-    SendingSettingsUpdateView, SendingSettingsDeleteView, MessageCreateView, MessageUpdateView, MessageDeleteView
+    SendingSettingsUpdateView, SendingSettingsDeleteView, MessageCreateView, MessageUpdateView, MessageDeleteView, \
+    LogListView, LogDetailView
 
 app_name = MainConfig.name
 
@@ -23,5 +24,7 @@ urlpatterns = [
     path('sendingsettings/sendingsettings_details/<int:pk>/', SendingSettingsDetailView.as_view(), name='sendingsettings_detail'),
     path('sendingsettings/update/<int:pk>/', SendingSettingsUpdateView.as_view(), name='sendingsettings_update'),
     path('sendingsettings/delete/<int:pk>/', SendingSettingsDeleteView.as_view(), name='sendingsettings_delete'),
+    path('logs/', LogListView.as_view(), name='logs'),
+    path('log_details/<int:pk>/', LogDetailView.as_view(), name='log_detail'),
 
 ]

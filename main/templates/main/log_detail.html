@@ -1,0 +1,11 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+  <div style="display: flex; flex-direction: column; gap: 10px;">
+    <h1 style="font-size: 24px; margin-bottom: 10px;">Просмотр лога</h1>
+    <div><strong>Сообщение для рассылки:</strong> {{ object.message }}</div>
+    <div><strong>Дата и время попытки:</strong> {{ object.timestamp }}</div>
+    <div><strong>Статус:</strong> {{ object.status }}</div>
+    <div><strong>Ответ сервера:</strong> {{ object.response }}</div>
+  </div>
+{% endblock %}

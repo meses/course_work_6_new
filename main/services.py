@@ -4,12 +4,15 @@ from config import settings
 from main.models import Message, Log, SendingSettings
 from django.core.cache import cache
 
+import schedule
+import time
 
 def daily_send():
     for item in SendingSettings.objects.filter(frequency='daily'):
         item.status = 'running'
         item.save()
         send_message(item)
+        print('отправлено')
         item.status = 'completed'
         item.save()
 
@@ -19,6 +22,7 @@ def weekly_send():
         item.status = 'running'
         item.save()
         send_message(item)
+        print('отправлено')
         item.status = 'completed'
         item.save()
 
@@ -28,6 +32,7 @@ def monthly_send():
         item.status = 'running'
         item.save()
         send_message(item)
+        print('отправлено')
         item.status = 'completed'
         item.save()
 
@@ -47,6 +52,7 @@ def send_message(message_item: SendingSettings):
                 [email],  # Кому отправляем письмо
                 fail_silently=False,
             )
+            print('Сообщение отправлено')
             status = 'success'
             response = 'Email sent successfully'
         except Exception as e:
@@ -55,15 +61,7 @@ def send_message(message_item: SendingSettings):
         Log.objects.create(message=message, status=status, response=response)
 
 
-# run crontab
-# python manage.py crontab add
-
-# show current active jobs of this project:
-# python manage.py crontab show
-
-# removing all defined jobs is straight forward:
-# python manage.py crontab remove
-
+'''
 def get_cached_log_data(log):
     if settings.CACHE_ENABLE:
         cache_key = f'log_{log.pk}'
@@ -84,3 +82,14 @@ def get_cached_log_data(log):
             'status': log.status,  # Статус попытки
             'response': log.response,  # Ответ почтового сервера, если он был
         }
+'''
+
+#def test_crontab_task():
+#    print('succsessfull!')
+
+#schedule.every(10).seconds.do(test_crontab_task)
+#schedule.every(20).seconds.do(daily_send)
+
+#while True:
+#   schedule.run_pending()
+#   time.sleep(1)

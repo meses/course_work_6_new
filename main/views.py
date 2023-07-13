@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 
 from main.forms import CustomerForm, SendingSettingsForm, MessageForm
-from main.models import Customer, Message, SendingSettings
+from main.models import Customer, Message, SendingSettings, Log
 from main.services import send_message
 
 # Create your views here.
@@ -119,3 +119,17 @@ class SendingSettingsDeleteView(DeleteView):
 
     def test_func(self):
         return self.request.user.is_superuser  # жесткие требования на удаление (только суперюзер может удалить)
+
+class LogListView(ListView):
+    model = Log
+    extra_context = {
+        'title': 'Список логов'
+    }
+
+class LogDetailView(DetailView):
+    model = Log
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['log_data'] = self.object
+        return context
