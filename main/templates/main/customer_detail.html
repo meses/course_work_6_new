@@ -1,0 +1,9 @@
+{% extends 'main/base.html' %}
+{% block content %}
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+        <h1 style="font-size: 24px; margin-bottom: 10px;">Просмотр клиента</h1>
+        <div><strong>ФИО:</strong> {{ object.name }}</div>
+        <div><strong>email:</strong> {{ object.email }}</div>
+        <div><strong>Описание:</strong> {{ object.description }}</div>
+    </div>
+{% endblock %}

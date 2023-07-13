@@ -1,0 +1,20 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+        <h1 style="font-size: 24px; margin-bottom: 10px;">Просмотр рассылки</h1>
+        <div><strong>Тема рассылки:</strong> {{ object.subject }}</div>
+        <div><strong>Содержание письма:</strong> {{ object.body }}</div>
+        <div><strong>Периодичность рассылки:</strong> {{ object.frequency }}</div>
+        <div><strong>Статус рассылки:</strong> {{ object.status }}</div>
+        <div><strong>Клиенты:</strong>
+            {% if object.customers.all %}
+                {% for customer in object.customers.all %}
+                    {{ customer.email }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            {% else %}
+                Нет клиентов
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

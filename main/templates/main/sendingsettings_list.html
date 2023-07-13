@@ -1,0 +1,36 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+    <div class="col-md-4">
+  <div class="card mb-4 box-shadow">
+    <div class="card-body">
+      <p class="card-text">Создать сообщение рассылки</p>
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="btn-group">
+          <form action="{% url 'main:sendingsettings_create' %}" method="GET">
+	        <button type="submit" class="btn btn-sm btn-outline-secondary">Добавить</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    {% for object in object_list %}
+        <div class="col-md-4">
+            <div class="card mb-4 box-shadow">
+                <div class="card-body">
+                    <p class="card-text">Название рассылки: {{ object|title }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="btn-group">
+                            <a type="button" href="{% url 'main:sendingsettings_detail' object.id %}"
+                               class="btn btn-sm btn-outline-secondary">Открыть</a>
+                            <a type="button" href="{% url 'main:sendingsettings_update' object.id %}"
+                               class="btn btn-sm btn-outline-secondary">Изменить</a>
+                            <a type="button" href="{% url 'main:sendingsettings_delete' object.id %}"
+                               class="btn btn-sm btn-outline-secondary">Удалить</a>
+                        </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

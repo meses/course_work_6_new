@@ -1,0 +1,38 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+<div class="col-md-4">
+  <div class="card mb-4 box-shadow">
+    <div class="card-body">
+      <p class="card-text">Добавить клиента</p>
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="btn-group">
+          <form action="{% url 'main:customer_create' %}" method="GET">
+	        <button type="submit" class="btn btn-sm btn-outline-secondary">Добавить</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  {% for object in object_list %}
+  <div class="col-md-4">
+    <div class="card mb-4 box-shadow">
+      <div class="card-body">
+        <p class="card-text">{{ object.name }}</p>
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="btn-group">
+            <a type="button" href="{% url 'main:customer_detail' object.id %}"
+                               class="btn btn-sm btn-outline-secondary">Открыть</a>
+            <a type="button" href="{% url 'main:customer_update' object.id %}"
+                               class="btn btn-sm btn-outline-secondary">Изменить</a>
+            <a type="button" href="{% url 'main:customer_delete' object.id %}"
+                               class="btn btn-sm btn-outline-secondary">Удалить</a>
+          </div>
+          <small class="text-muted">9 mins</small>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+{% endblock %}
