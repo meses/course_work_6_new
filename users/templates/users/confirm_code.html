@@ -1,0 +1,31 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+    <div class="container">
+        <div class="col-12">
+            <form class="row" method="post">
+                {% csrf_token %}
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Подтверждение почты</h3>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">Для завершения регистрации введите проверочный код, отправленный на ваш email</p>
+                            <div class="col-auto">
+                                <label for="inputPassword6" class="col-form-label">Введите проверочный код:</label>
+                            </div>
+                            <div class="col-auto">
+                                <input type="text" id="inputPassword6" class="form-control"
+                                       aria-labelledby="passwordHelpInline" name="verify_code">
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">Отправить</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
