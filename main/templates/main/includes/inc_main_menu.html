@@ -8,6 +8,7 @@
         <li><a href="#" class="text-white">Сообщения</a></li>
         <li><a href="#" class="text-white">Контакты</a></li>
         <li><a href="#" class="text-white">Блог</a></li>
+        <li><a href="{% url 'users:users_list' %}" class="text-white">Пользователи</a></li>
 
         {% if user.is_authenticated %}
             <li><a href="{% url 'users:logout' %}" class="text-white">Выйти</a></li>

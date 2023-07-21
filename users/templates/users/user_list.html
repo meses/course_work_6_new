@@ -1,0 +1,26 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+  {% for object in object_list %}
+    {% if not object.is_superuser %}
+  <div class="col-md-4">
+    <div class="card mb-4 box-shadow">
+      <div class="card-body">
+        <p class="card-text">{{ object.email }}</p>
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="btn-group">
+            {% if object.is_active %}
+            <a type="button" href="{% url 'users:toggle_activity_user' object.pk %}"
+                               class="btn btn-sm btn-outline-secondary">Заблокировать</a>
+            {% else %}
+            <a type="button" href="{% url 'users:toggle_activity_user' object.pk %}"
+                               class="btn btn-sm btn-outline-secondary">Разблокировать</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+  {% endfor %}
+{% endblock %}

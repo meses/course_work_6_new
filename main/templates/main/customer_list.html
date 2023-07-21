@@ -1,6 +1,7 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
+{% if perms.main.add_customer %}
 <div class="col-md-4">
   <div class="card mb-4 box-shadow">
     <div class="card-body">
@@ -15,6 +16,7 @@
     </div>
   </div>
 </div>
+{% endif %}
   {% for object in object_list %}
   <div class="col-md-4">
     <div class="card mb-4 box-shadow">

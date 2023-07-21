@@ -1,9 +1,10 @@
 from django.conf import settings
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.mail import send_mail
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView, ListView
 from django.core.exceptions import ValidationError
 
 from users.forms import UserRegisterForm, UserProfileForm
@@ -60,6 +61,25 @@ def confirm_code(request, email):
 
     return render(request, 'users/confirm_code.html', context)
 
+class UserListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    model = User
+    permission_required = 'user.view_user'
+    extra_context = {
+        'title': 'Список пользователей сервиса'
+    }
+
 def confirmation_succsess(request):
     return render(request, 'users/confirmation_succsess.html')
+
+@login_required
+def toggle_activity_user(request, pk):
+    user_item = get_object_or_404(User, pk=pk)
+    if user_item.is_active:
+        user_item.is_active = False
+    else:
+        user_item.is_active = True
+
+    user_item.save()
+
+    return redirect(reverse('users:users_list'))
 

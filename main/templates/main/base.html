@@ -93,11 +93,21 @@
           <h1 class="jumbotron-heading">{{ title }}</h1>
           <p class="lead text-muted">Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don't simply skip over it entirely.</p>
           <p>
+              {% if perms.main.view_customer %}
             <a href="{% url 'main:customers' %}" class="btn btn-secondary my-2">Клиенты</a>
+              {% endif %}
+              {% if perms.main.view_messages %}
             <a href="{% url 'main:messages' %}" class="btn btn-secondary my-2">Сообщения</a>
+              {% endif %}
+              {% if perms.main.view_sendingsettings %}
             <a href="{% url 'main:sendingsettings' %}" class="btn btn-secondary my-2">Рассылки</a>
+              {% endif %}
+              {% if perms.main.view_log %}
             <a href="{% url 'main:logs' %}" class="btn btn-secondary my-2">Логи</a>
+              {% endif %}
+              {% if perms.main.view_blog %}
             <a href="#" class="btn btn-secondary my-2">Блог</a>
+              {% endif %}
           </p>
         </div>
       </section>

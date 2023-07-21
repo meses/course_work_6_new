@@ -1,3 +1,5 @@
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.http import Http404
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
@@ -13,71 +15,80 @@ company_name = 'Рассылки'
 def index(request):
     return render(request, 'main/index.html')
 
-class CustomerListView(ListView):
+class CustomerListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = Customer
+    permission_required = 'main.view_customer'
     extra_context = {
         'title': 'Клиенты',
         'company_title': company_name
     }
 
-class CustomerCreateView(CreateView):
+class CustomerCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Customer
     form_class = CustomerForm
+    permission_required = 'main.add_customer'
     success_url = reverse_lazy('main:customers')
 
-class CustomerDetailView(DetailView):
+class CustomerDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = Customer
+    permission_required = 'main.view_customer'
 
-class CustomerUpdateView(UpdateView):
+class CustomerUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Customer
     form_class = CustomerForm
+    permission_required = 'main.update_customer'
     success_url = reverse_lazy('main:customers')
 
     def get_success_url(self):
         pk = self.kwargs['pk']
         return reverse_lazy('main:customer_update', kwargs={'pk': pk})
 
-class CustomerDeleteView(DeleteView):
+class CustomerDeleteView(LoginRequiredMixin, DeleteView):
     model = Customer
     success_url = reverse_lazy('main:customers')
 
     def test_func(self):
         return self.request.user.is_superuser  # жесткие требования на удаление (только суперюзер может удалить)
 
-class MessageListView(ListView):
+class MessageListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = Message
+    permission_required = 'main.view_message'
     extra_context = {
         'title': 'Список сообщений'
     }
 
-class MessageCreateView(CreateView):
+class MessageCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Message
     form_class = MessageForm
+    permission_required = 'main.add_message'
     success_url = reverse_lazy('main:messages')
 
 
-class MessageUpdateView(UpdateView):
+class MessageUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Message
     form_class = MessageForm
+    permission_required = 'main.update_message'
     success_url = reverse_lazy('main:messages')
 
 
-class MessageDeleteView(DeleteView):
+class MessageDeleteView(LoginRequiredMixin, DeleteView):
     model = Message
     success_url = reverse_lazy('main:messages')
 
     def test_func(self):
         return self.request.user.is_superuser  # жесткие требования на удаление (только суперюзер может удалить)
 
-class SendingSettingsListView(ListView):
+class SendingSettingsListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = SendingSettings
+    permission_required = 'main.view_sendingsettings'
     extra_context = {
         'title': 'Список рассылок'
     }
 
-class SendingSettingsCreateView(CreateView):
+class SendingSettingsCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = SendingSettings
     form_class = SendingSettingsForm
+    permission_required = 'main.add_sendingsettings'
     success_url = reverse_lazy('main:sendingsettings')
 
     def form_valid(self, form):
@@ -95,13 +106,15 @@ class SendingSettingsCreateView(CreateView):
         return response
 
 
-class SendingSettingsDetailView(DetailView):
+class SendingSettingsDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
         model = SendingSettings
+        permission_required = 'main.view_sendingsettings'
 
 
-class SendingSettingsUpdateView(UpdateView):
+class SendingSettingsUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = SendingSettings
     form_class = SendingSettingsForm
+    permission_required = 'main.update_sendingsettings'
     success_url = reverse_lazy('main:sendingsettings')
 
     def get_success_url(self):
@@ -113,21 +126,31 @@ class SendingSettingsUpdateView(UpdateView):
         context['sendingsettings_count'] = SendingSettings.objects.count()
         return context
 
-class SendingSettingsDeleteView(DeleteView):
+    def get_object(self, queryset=None):
+        object = super().get_object(queryset)
+        print(object.user_id)
+        print(self.request.user)
+        if object.user_id != self.request.user:
+            raise Http404("Вы не являетесь владельцем рассылки.")
+        return object
+
+class SendingSettingsDeleteView(LoginRequiredMixin, DeleteView):
     model = SendingSettings
     success_url = reverse_lazy('main:sendingsettings')
 
     def test_func(self):
         return self.request.user.is_superuser  # жесткие требования на удаление (только суперюзер может удалить)
 
-class LogListView(ListView):
+class LogListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = Log
+    permission_required = 'main.view_log'
     extra_context = {
         'title': 'Список логов'
     }
 
-class LogDetailView(DetailView):
+class LogDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = Log
+    permission_required = 'main.view_log'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
