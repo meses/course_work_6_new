@@ -1,6 +1,7 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
+{% if perms.main.add_sendingsettings %}
     <div class="col-md-4">
   <div class="card mb-4 box-shadow">
     <div class="card-body">
@@ -15,6 +16,7 @@
     </div>
   </div>
 </div>
+{% endif %}
     {% for object in object_list %}
         <div class="col-md-4">
             <div class="card mb-4 box-shadow">
@@ -22,12 +24,25 @@
                     <p class="card-text">Название рассылки: {{ object|title }}</p>
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="btn-group">
+                            {% if perms.main.view_sendingsettings %}
                             <a type="button" href="{% url 'main:sendingsettings_detail' object.id %}"
                                class="btn btn-sm btn-outline-secondary">Открыть</a>
+                            {% endif %}
+                            {% if perms.main.change_sendingsettings %}
                             <a type="button" href="{% url 'main:sendingsettings_update' object.id %}"
                                class="btn btn-sm btn-outline-secondary">Изменить</a>
+                            {% endif %}
+                            {% if perms.main.delete_sendingsettings %}
                             <a type="button" href="{% url 'main:sendingsettings_delete' object.id %}"
                                class="btn btn-sm btn-outline-secondary">Удалить</a>
+                            {% endif %}
+                            {% if object.status == "running" %}
+                            <a type="button" href="{% url 'main:toggle_activity_sendingsettings' object.id %}"
+                               class="btn btn-sm btn-outline-pimary">Отключить</a>
+                            {% else %}
+                            <a type="button" href="{% url 'main:toggle_activity_sendingsettings' object.id %}"
+                               class="btn btn-sm btn-outline-secondary">Включить</a>
+                            {% endif %}
                         </div>
                 </div>
             </div>

@@ -2,14 +2,25 @@
     <h4 class="text-white">Меню</h4>
     <ul class="list-unstyled">
         <li><a href="{% url 'main:index' %}" class="text-white">Главная</a></li>
-        <li><a href="{% url 'main:customers' %}" class="text-white">Клиенты</a></li>
-        <li><a href="#" class="text-white">Логи</a></li>
-        <li><a href="#" class="text-white">Рассылки</a></li>
-        <li><a href="#" class="text-white">Сообщения</a></li>
-        <li><a href="#" class="text-white">Контакты</a></li>
-        <li><a href="#" class="text-white">Блог</a></li>
-        <li><a href="{% url 'users:users_list' %}" class="text-white">Пользователи</a></li>
-
+        {% if perms.main.view_customer %}
+            <li><a href="{% url 'main:customers' %}" class="text-white">Клиенты</a></li>
+        {% endif %}
+        {% if perms.main.view_messages %}
+            <li><a href="{% url 'main:messages' %}" class="text-white">Сообщения</a></li>
+        {% endif %}
+        {% if perms.main.view_sendingsettings %}
+            <li><a href="{% url 'main:sendingsettings' %}" class="text-white">Рассылки</a></li>
+        {% endif %}
+        {% if perms.main.view_log %}
+            <li><a href="{% url 'main:logs' %}" class="text-white">Логи</a></li>
+        {% endif %}
+        {% if perms.main.view_blog %}
+            <li><a href="#" class="text-white">Блог</a></li>
+        {% endif %}
+        {% if perms.users.view_user %}
+            <li><a href="{% url 'users:users_list' %}" class="text-white">Пользователи</a></li>
+        {% endif %}
+        <br>
         {% if user.is_authenticated %}
             <li><a href="{% url 'users:logout' %}" class="text-white">Выйти</a></li>
             <li><a href="{% url 'users:profile' %}" class="text-white">Профиль</a></li>

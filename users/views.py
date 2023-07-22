@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, UpdateView, ListView
 from django.core.exceptions import ValidationError
+from django.contrib.auth.models import Group
 
 from users.forms import UserRegisterForm, UserProfileForm
 from users.models import User
@@ -34,6 +35,8 @@ class RegisterView(CreateView):
                 from_email=settings.EMAIL_HOST_USER,
                 recipient_list=[new_user.email]
             )
+            my_group = Group.objects.get(name='simple_user')
+            new_user.groups.add(my_group)
 
         return super().form_valid(form)
 
@@ -63,7 +66,7 @@ def confirm_code(request, email):
 
 class UserListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = User
-    permission_required = 'user.view_user'
+    permission_required = 'users.view_user'
     extra_context = {
         'title': 'Список пользователей сервиса'
     }

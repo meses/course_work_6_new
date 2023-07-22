@@ -1,7 +1,8 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.http import Http404
-from django.shortcuts import render
-from django.urls import reverse_lazy
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 
 from main.forms import CustomerForm, SendingSettingsForm, MessageForm
@@ -156,3 +157,15 @@ class LogDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['log_data'] = self.object
         return context
+
+@login_required
+def toggle_activity_sendingsettings(request, pk):
+    sendingsettings_item = get_object_or_404(SendingSettings, pk=pk)
+    if sendingsettings_item.status == 'running':
+        sendingsettings_item.status = 'completed'
+    else:
+        sendingsettings_item.status = 'running'
+
+    sendingsettings_item.save()
+
+    return redirect(reverse('main:sendingsettings_list'))

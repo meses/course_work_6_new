@@ -11,7 +11,7 @@
           <div class="btn-group">
             {% if object.is_active %}
             <a type="button" href="{% url 'users:toggle_activity_user' object.pk %}"
-                               class="btn btn-sm btn-outline-secondary">Заблокировать</a>
+                               class="btn btn-sm btn-outline-primary">Заблокировать</a>
             {% else %}
             <a type="button" href="{% url 'users:toggle_activity_user' object.pk %}"
                                class="btn btn-sm btn-outline-secondary">Разблокировать</a>
