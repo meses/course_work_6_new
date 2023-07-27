@@ -61,9 +61,9 @@ def send_message(message_item: SendingSettings):
         Log.objects.create(message=message, status=status, response=response)
 
 
-'''
+
 def get_cached_log_data(log):
-    if settings.CACHE_ENABLE:
+    if settings.CACHE_ENABLED:
         cache_key = f'log_{log.pk}'
         cached_data = cache.get(cache_key)
         if cached_data is None:
@@ -82,7 +82,7 @@ def get_cached_log_data(log):
             'status': log.status,  # Статус попытки
             'response': log.response,  # Ответ почтового сервера, если он был
         }
-'''
+
 
 #def test_crontab_task():
 #    print('succsessfull!')

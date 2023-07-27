@@ -7,7 +7,9 @@ from django.views.generic import ListView, CreateView, DetailView, UpdateView, D
 
 from main.forms import CustomerForm, SendingSettingsForm, MessageForm
 from main.models import Customer, Message, SendingSettings, Log
-from main.services import send_message
+from main.services import send_message, get_cached_log_data
+from config.settings import CACHE_ENABLED
+from django.core.cache import cache
 
 # Create your views here.
 company_name = 'Рассылки'
@@ -99,6 +101,15 @@ class SendingSettingsListView(LoginRequiredMixin, PermissionRequiredMixin, ListV
         'title': 'Список рассылок'
     }
 
+    '''if CACHE_ENABLED:
+        key = f'sendingsettings_list'
+        sendingsettings_list = cache.get(key)
+        if sendingsettings_list is None:
+            sendingsettings_list = SendingSettings.objects.all()
+            cache.set(key, sendingsettings_list)
+    else:
+        sendingsettings_list = SendingSettings.objects.all()'''
+
     def get_queryset(self):
         queryset = super().get_queryset()
         queryset = queryset.filter(user_id = self.request.user)
@@ -178,7 +189,7 @@ class LogDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['log_data'] = self.object
+        context['log_data'] = get_cached_log_data(self.object)
         return context
 
 @login_required

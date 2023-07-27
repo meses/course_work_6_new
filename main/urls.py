@@ -1,4 +1,5 @@
 from django.urls import path
+from django.views.decorators.cache import cache_page
 
 from main.apps import MainConfig
 from main.views import index, CustomerListView, MessageListView, SendingSettingsListView, CustomerCreateView, \
@@ -19,7 +20,7 @@ urlpatterns = [
     path('messages/create/', MessageCreateView.as_view(), name='messages_create'),
     path('messages/update/<int:pk>/', MessageUpdateView.as_view(), name='message_update'),
     path('messages/delete/<int:pk>/', MessageDeleteView.as_view(), name='message_delete'),
-    path('sendingsettings/', SendingSettingsListView.as_view(), name='sendingsettings'),
+    path('sendingsettings/', cache_page(60)(SendingSettingsListView.as_view()), name='sendingsettings'),
     path('sendingsettings/create/', SendingSettingsCreateView.as_view(), name='sendingsettings_create'),
     path('sendingsettings/sendingsettings_details/<int:pk>/', SendingSettingsDetailView.as_view(), name='sendingsettings_detail'),
     path('sendingsettings/update/<int:pk>/', SendingSettingsUpdateView.as_view(), name='sendingsettings_update'),
