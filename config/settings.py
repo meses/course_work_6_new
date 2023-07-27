@@ -138,14 +138,13 @@ STATICFILES_DIRS = (
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-'''
+
 CRONJOBS = [
-    ('* * * * *', 'main.services.test_crontab_task'),  # запускается каждые 1 минут
-    #('5 * * * *', 'main.services.daily_send'),  # запускается каждые 5 минут
-    #('0 0 * * 0', 'main.services.weekly_send'),  # запускается каждое воскресенье в полночь
-    #('0 0 1 * *', 'main.services.monthly_send'),  # запускается в первый день каждого месяца в полночь
+    ('5 * * * *', 'main.services.daily_send'),  # запускается каждые 5 минут
+    ('0 0 * * 0', 'main.services.weekly_send'),  # запускается каждое воскресенье в полночь
+    ('0 0 1 * *', 'main.services.monthly_send'),  # запускается в первый день каждого месяца в полночь
 ]
-'''
+
 
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465

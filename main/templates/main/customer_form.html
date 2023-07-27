@@ -1,7 +1,7 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
-    {% if object.client_owner == request.user and not request.user.is_staff or request.user.is_superuser %}
+    {% if object.client_owner == request.users and not request.user.is_staff or request.user.is_superuser %}
     <div class="row flex-wrap">
         <div class="col-md-10">
             <div class="card">

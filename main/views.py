@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
@@ -24,11 +24,24 @@ class CustomerListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         'company_title': company_name
     }
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(user_id = self.request.user)
+        return queryset
+
 class CustomerCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Customer
     form_class = CustomerForm
     permission_required = 'main.add_customer'
-    success_url = reverse_lazy('main:customers')
+    #success_url = reverse_lazy('main:customers')
+
+    def form_valid(self, form):
+        form = CustomerForm(data=self.request.POST)
+        if form.is_valid():
+            customer = form.save(commit=False)
+            customer.user_id = self.request.user
+            customer.save()
+        return HttpResponseRedirect(reverse('main:customers'))
 
 class CustomerDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = Customer
@@ -86,6 +99,11 @@ class SendingSettingsListView(LoginRequiredMixin, PermissionRequiredMixin, ListV
         'title': 'Список рассылок'
     }
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(user_id = self.request.user)
+        return queryset
+
 class SendingSettingsCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = SendingSettings
     form_class = SendingSettingsForm
@@ -96,6 +114,11 @@ class SendingSettingsCreateView(LoginRequiredMixin, PermissionRequiredMixin, Cre
         form.instance.status = 'running'
         response = super().form_valid(form)
         send_message(self.object)
+        form = SendingSettingsForm(data=self.request.POST)
+        if form.is_valid():
+            sendingsettings = form.save(commit=False)
+            sendingsettings.user_id = self.request.user
+            sendingsettings.save()
         return response
 
     def post(self, request, *args, **kwargs):
@@ -168,4 +191,4 @@ def toggle_activity_sendingsettings(request, pk):
 
     sendingsettings_item.save()
 
-    return redirect(reverse('main:sendingsettings_list'))
+    return redirect(reverse('main:sendingsettings'))

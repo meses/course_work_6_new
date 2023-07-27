@@ -8,13 +8,13 @@ import schedule
 import time
 
 def daily_send():
-    for item in SendingSettings.objects.filter(frequency='daily'):
+    for item in SendingSettings.objects.filter(frequency='daily').filter(status__in=['running','created']):
         item.status = 'running'
         item.save()
         send_message(item)
         print('отправлено')
-        item.status = 'completed'
-        item.save()
+        #item.status = 'completed'
+        #item.save()
 
 
 def weekly_send():
@@ -39,7 +39,7 @@ def monthly_send():
 
 def send_message(message_item: SendingSettings):
     # Получаем список email-адресов клиентов, которым нужно отправить рассылку
-    customers_emails = message_item.customers.values_list('email', flat=True)  # noqa(отключить проверку)
+    customers_emails = message_item.customers.values_list('email', flat=True)
 
     # Отправляем письмо каждому клиенту
     for email in customers_emails:
@@ -91,5 +91,6 @@ def get_cached_log_data(log):
 #schedule.every(20).seconds.do(daily_send)
 
 #while True:
-#   schedule.run_pending()
-#   time.sleep(1)
+#    schedule.run_pending()
+#    time.sleep(1)
+#    print('fdgdsgs')
