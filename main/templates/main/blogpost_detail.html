@@ -1,0 +1,21 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <h1>{{ object.title }}</h1>
+                <p>{{ object.content }}</p>
+            </div>
+            <div class="col-md-4">
+                <p>Количество просмотров: {{ object.views }}</p>
+                <p>Дата публикации: {{ object.pub_date }}</p>
+                {% if object.is_active %}
+                    <p>Статус: Опубликовано</p>
+                {% else %}
+                    <p>Status: Снято с публикации</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

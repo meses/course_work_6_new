@@ -1,12 +1,13 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.db.models import Count
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 
 from main.forms import CustomerForm, SendingSettingsForm, MessageForm
-from main.models import Customer, Message, SendingSettings, Log
+from main.models import Customer, Message, SendingSettings, Log, BlogPost
 from main.services import send_message, get_cached_log_data
 from config.settings import CACHE_ENABLED
 from django.core.cache import cache
@@ -17,6 +18,24 @@ company_name = 'Рассылки'
 
 def index(request):
     return render(request, 'main/index.html')
+
+class IndexView(ListView):
+    def get(self, request, *args, **kwargs):
+        sendingsettings_count = SendingSettings.objects.count()  # получаем информацию об общем количестве рассылок
+        sendingsettings_count_run = SendingSettings.objects.filter(
+            status='running').count()  # получаем информацию об количестве активных рассылок
+        unique_customers_count = Customer.objects.annotate(num_sendingsettings=Count('sendingsettings')).filter(
+            num_sendingsettings__gt=0).count()  # получаем информацию об уникальных клиентах
+        blog_posts = list(BlogPost.objects.filter(is_active=True).order_by('?').values_list('title', flat=True)[
+                          :3])  # получаем три случайные публикации
+        context = {
+            'title': 'Главная',
+            'newsletters_count': sendingsettings_count,
+            'newsletters_count_run': sendingsettings_count_run,
+            'unique_customers_count': unique_customers_count,
+            'blog_posts': blog_posts
+        }
+        return render(request, 'main/index.html', context)
 
 class CustomerListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = Customer
@@ -35,7 +54,6 @@ class CustomerCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView
     model = Customer
     form_class = CustomerForm
     permission_required = 'main.add_customer'
-    #success_url = reverse_lazy('main:customers')
 
     def form_valid(self, form):
         form = CustomerForm(data=self.request.POST)
@@ -100,15 +118,6 @@ class SendingSettingsListView(LoginRequiredMixin, PermissionRequiredMixin, ListV
     extra_context = {
         'title': 'Список рассылок'
     }
-
-    '''if CACHE_ENABLED:
-        key = f'sendingsettings_list'
-        sendingsettings_list = cache.get(key)
-        if sendingsettings_list is None:
-            sendingsettings_list = SendingSettings.objects.all()
-            cache.set(key, sendingsettings_list)
-    else:
-        sendingsettings_list = SendingSettings.objects.all()'''
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -203,3 +212,21 @@ def toggle_activity_sendingsettings(request, pk):
     sendingsettings_item.save()
 
     return redirect(reverse('main:sendingsettings'))
+
+class BlogListView(ListView):
+    model = BlogPost
+    context_object_name = 'blogs'
+
+    def get_queryset(self):
+        return BlogPost.objects.filter(is_active=True)  # по положительному признаку публикации
+
+class BlogDetailView(DetailView):
+    model = BlogPost
+    context_object_name = 'blog'
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        self.object.views += 1
+        self.object.save()
+
+        return self.object

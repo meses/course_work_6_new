@@ -105,8 +105,8 @@
               {% if perms.main.view_log %}
             <a href="{% url 'main:logs' %}" class="btn btn-secondary my-2">Логи</a>
               {% endif %}
-              {% if perms.main.view_blog %}
-            <a href="#" class="btn btn-secondary my-2">Блог</a>
+              {% if perms.main.view_blogpost %}
+            <a href="{% url 'main:blogs' %}" class="btn btn-secondary my-2">Блог</a>
               {% endif %}
               {% if perms.users.view_user %}
             <a href="{% url 'users:users_list' %}" class="btn btn-secondary my-2">Пользователи</a>

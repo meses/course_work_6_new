@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils import timezone
+
 from users.models import User
 
 NULLABLE = {'blank': True, 'null': True}
@@ -91,3 +93,20 @@ class Log(models.Model):
         verbose_name = "Лог"
         verbose_name_plural = "Логи"
         ordering = ["-timestamp"]
+
+class BlogPost(models.Model):
+    """
+    Блог модель
+    """
+    title = models.CharField(max_length=200, verbose_name='Заголовок')
+    content = models.TextField(verbose_name='Тело поста')
+    views = models.IntegerField(default=0, verbose_name='Просмотры')
+    pub_date = models.DateField(default=timezone.now, verbose_name='Дата публикации')
+    is_active = models.BooleanField(default=False, verbose_name='Признак активности')
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = 'Блог'
+        verbose_name_plural = 'Блоги'

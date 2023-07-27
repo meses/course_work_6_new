@@ -5,12 +5,12 @@ from main.apps import MainConfig
 from main.views import index, CustomerListView, MessageListView, SendingSettingsListView, CustomerCreateView, \
     CustomerDetailView, CustomerUpdateView, CustomerDeleteView, SendingSettingsCreateView, SendingSettingsDetailView, \
     SendingSettingsUpdateView, SendingSettingsDeleteView, MessageCreateView, MessageUpdateView, MessageDeleteView, \
-    LogListView, LogDetailView, toggle_activity_sendingsettings
+    LogListView, LogDetailView, toggle_activity_sendingsettings, IndexView, BlogListView, BlogDetailView
 
 app_name = MainConfig.name
 
 urlpatterns = [
-    path('', index, name='index'),
+    path('', IndexView.as_view(), name='index'),
     path('customers/', CustomerListView.as_view(), name='customers'),
     path('customers/create/', CustomerCreateView.as_view(), name='customer_create'),
     path('customers/detail/<int:pk>', CustomerDetailView.as_view(), name='customer_detail'),
@@ -28,5 +28,7 @@ urlpatterns = [
     path('logs/', LogListView.as_view(), name='logs'),
     path('log_details/<int:pk>/', LogDetailView.as_view(), name='log_detail'),
     path('toggle_activity_sendingsettings/<int:pk>/', toggle_activity_sendingsettings, name='toggle_activity_sendingsettings'),
+    path('blogs/', BlogListView.as_view(), name='blogs'),
+    path('blog_details/<int:pk>/', BlogDetailView.as_view(), name='blog_details'),
 
 ]
